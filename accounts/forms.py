@@ -23,9 +23,9 @@ class CustomUserCreationForm(UserCreationForm):
             'email',
             'gender',
             'age',
-            'weekly_reading_time',
-            'yearly_reading_count',
-            'profile_image',
+            'weekly_avg_reading_time',
+            'annual_reading_amount',
+            'profile_img',
             'interested_genres',  # 실제 DB에는 favorite_categories로 저장됨
         )
         labels = {
@@ -35,9 +35,9 @@ class CustomUserCreationForm(UserCreationForm):
             'email': '이메일',
             'gender': '성별',
             'age': '나이',
-            'weekly_reading_time': '주간 평균 독서 시간',
-            'yearly_reading_count': '연간 독서량',
-            'profile_image': '프로필 사진',
+            'weekly_avg_reading_time': '주간 평균 독서 시간',
+            'annual_reading_amount': '연간 독서량',
+            'profile_img': '프로필 사진',
         }
 
     def __init__(self, *args, **kwargs):
@@ -74,9 +74,9 @@ class CustomUserChangeForm(UserChangeForm):
             'email',
             'gender',
             'age',
-            'weekly_reading_time',
-            'yearly_reading_count',
-            'profile_image',
+            'weekly_avg_reading_time',
+            'annual_reading_amount',
+            'profile_img',
             'interested_genres',
         )
         labels = {
@@ -86,9 +86,9 @@ class CustomUserChangeForm(UserChangeForm):
             'email': '이메일',
             'gender': '성별',
             'age': '나이',
-            'weekly_reading_time': '주간 평균 독서 시간',
-            'yearly_reading_count': '연간 독서량',
-            'profile_image': '프로필 사진',
+            'weekly_avg_reading_time': '주간 평균 독서 시간',
+            'annual_reading_amount': '연간 독서량',
+            'profile_img': '프로필 사진',
         }
 
     def __init__(self, *args, **kwargs):

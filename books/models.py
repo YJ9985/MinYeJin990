@@ -1,33 +1,5 @@
 from django.db import models
-
-
-class Book(models.Model):
-    title = models.CharField(max_length=20)
-    description = models.TextField()
-    customer_review_rank = models.IntegerField()
-    author = models.CharField(max_length=15)
-    author_profile_img = models.ImageField(upload_to="author_profiles/", blank=True)
-    author_info = models.TextField()
-    author_works = models.CharField(max_length=50)
-    cover_image = models.ImageField(blank=True)
-    audio_file = models.FileField(upload_to="tts/", blank=True, null=True)
-    CATEGORY_CHOICES = [
-        ('LITERATURE', '소설/시/희곡'),
-        ('ECONOMY', '경제/경영'),
-        ('DEVELOPMENT', '자기계발'),
-        ('HUMANITY', '인문/교양'),
-        ('SCIENCE', '과학'),
-        ('HOBBY', '취미/실용'),
-        ('MINORS', '어린이/청소년'),
-    ]
-
-    category = models.CharField(
-        max_length=100,
-        unique=True,
-        choices=CATEGORY_CHOICES,
-        help_text = '도서 종류를 선택해주세요.',
-        verbose_name='종류',
-        )
+from django.conf import settings
 
 class Category(models.Model):
     CATEGORY_CHOICES = [
@@ -45,12 +17,50 @@ class Category(models.Model):
         unique=True,
         choices=CATEGORY_CHOICES,
         help_text = '도서 종류를 선택해주세요.',
-        verbose_name='종류',
+        verbose_name='카테고리',
         )
 
     def __str__(self):
-        return self.name
+        return self.get_name_display()
+    
+
+class Book(models.Model):
+    users = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name='books',
+        verbose_name='등록한 사용자',
+    )
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    title = models.CharField(max_length=20)
+    description = models.TextField()
+    customer_review_rank = models.IntegerField()
+    author = models.CharField(max_length=15)
+    author_profile_img = models.ImageField(upload_to="author_profiles/", blank=True)
+    author_info = models.TextField(blank=True)
+    author_works = models.CharField(max_length=50, blank=True)
+    cover_image = models.ImageField(upload_to='book_covers/', blank=True)
+    audio_file = models.FileField(upload_to="tts/", blank=True, null=True)
     
 # 특정 도서에 대한 게시글
 class Thread(models.Model):
-    title = models.ForeignKey(Book, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name='작성자',
+    )
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, verbose_name='해당 도서')
+    title = models.CharField(max_length=100)
+    content = models.TextField()
+    reading_date = models.DateField(null=True, blank=True)
+    cover_img = models.ImageField(upload_to="thread_covers/", blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    like_users = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name='liked_threads',
+        blank=True,
+        verbose_name='좋아요한 사용자'
+    )
+
+    def __str__(self):
+        return self.title

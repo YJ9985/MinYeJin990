@@ -4,6 +4,14 @@ from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
+    # 관심 장르
+    interested_genres = models.ManyToManyField(
+        'books.Category',
+        related_name='interested_users',
+        blank=True,
+        verbose_name='관심 장르'
+    )
+
     # 성별: 선택지 제공 (M/F)
     GENDER_CHOICES = [
         ('M', '남성'),
@@ -25,37 +33,39 @@ class User(AbstractUser):
     )
 
     # 주간 평균 독서 시간
-    weekly_reading_time = models.PositiveIntegerField(
+    weekly_avg_reading_time = models.PositiveIntegerField(
         blank=True,
         null=True,
-        verbose_name='주간 평균 독서 시간 (시간)',
+        verbose_name='주간 평균 독서 시간',
     )
 
     # 연간 독서량
-    yearly_reading_count = models.PositiveIntegerField(
+    annual_reading_amount = models.PositiveIntegerField(
         blank=True,
         null=True,
-        verbose_name='연간 독서량 (권)',
+        verbose_name='연간 독서량',
     )
 
     # 프로필 사진
-    profile_image = models.ImageField(
+    profile_img = models.ImageField(
         upload_to='profile_images/',
         blank=True,
         null=True,
         verbose_name='프로필 사진',
     )
 
-    # 관심 장르
-    favorite_categories = models.CharField(
-        max_length=600,
+    # 팔로우
+    followings = models.ManyToManyField(
+        'self',
+        symmetrical=False,
+        related_name='followers',
         blank=True,
-        verbose_name='관심 장르',
-        help_text='선택된 장르를 쉼표(,)로 구분하여 저장합니다.',
+        verbose_name='팔로우',
     )
 
-    def get_favorite_categories_display(self):
-        return self.favorite_categories.split(',') if self.favorite_categories else []
+    # def get_favorite_categories_display(self):
+    #     return self.favorite_categories.split(',') if self.favorite_categories else []
 
     def __str__(self):
         return self.username
+    

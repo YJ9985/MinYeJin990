@@ -109,7 +109,4 @@ def follow(request, user_pk):
             person.followers.remove(request.user)
         else:
             person.followers.add(request.user)
-    context = {
-        'person': person,
-    }
-    return redirect(request, 'accounts/profile.html', context)
+    return redirect('accounts:profile', user_pk=person.pk)

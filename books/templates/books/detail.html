@@ -2,6 +2,7 @@
 
 {% block content %}
   <h1>도서 상세 페이지</h1>
+  <hr>
 
   {% if book.cover_image %}
     <div style="width: 300px;">
@@ -9,7 +10,7 @@
     </div>
   {% endif %}
 
-  <h2>{{ book.title }}</h2>
+  <h2 class="mt-2">{{ book.title }}</h2>
   <h5>{{book.get_category_display}}</h5>
   <p>{{ book.description }}</p>
   <h5>회원 리뷰 평점 : {{ book.customer_review_rank }} / 10</h5>
@@ -73,6 +74,6 @@
   <hr>
 
   <div>
-    <a href="{% url 'books:index' %}" class="btn btn-primary">BACK</a>
+    <a href="{% url 'books:index' %}" class="btn btn-secondary">BACK</a>
   </div>
 {% endblock content %}

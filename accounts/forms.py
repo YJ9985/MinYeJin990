@@ -26,7 +26,7 @@ class CustomUserCreationForm(UserCreationForm):
             'weekly_avg_reading_time',
             'annual_reading_amount',
             'profile_img',
-            'interested_genres',  # 실제 DB에는 favorite_categories로 저장됨
+            'interested_genres',
         )
         labels = {
             'username': '아이디',
@@ -38,6 +38,7 @@ class CustomUserCreationForm(UserCreationForm):
             'weekly_avg_reading_time': '주간 평균 독서 시간',
             'annual_reading_amount': '연간 독서량',
             'profile_img': '프로필 사진',
+            'interested_genres': '관심 장르',
         }
 
     def __init__(self, *args, **kwargs):
@@ -45,15 +46,13 @@ class CustomUserCreationForm(UserCreationForm):
         self.fields['password1'].label = "비밀번호"
         self.fields['password2'].label = "비밀번호 확인"
 
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        # ModelMultipleChoiceField로 받은 queryset을 name 문자열로 변환
-        genres = self.cleaned_data.get('interested_genres')
-        if genres:
-            user.favorite_categories = ','.join([g.name for g in genres])
-        if commit:
-            user.save()
-        return user
+def save(self, commit=True):
+    user = super().save(commit=False)
+    if commit:
+        user.save()
+        self.save_m2m()  # ← 여기가 정답!
+    return user
+
     
 
 class CustomUserChangeForm(UserChangeForm):
@@ -89,23 +88,23 @@ class CustomUserChangeForm(UserChangeForm):
             'weekly_avg_reading_time': '주간 평균 독서 시간',
             'annual_reading_amount': '연간 독서량',
             'profile_img': '프로필 사진',
+            'interested_genres': '관심 장르',
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields.pop('password')  # 비밀번호 필드 제거
+        self.fields['interested_genres'].queryset = Category.objects.all() 
 
-        # 초기값 설정: 쉼표로 저장된 문자열을 → Category 객체 리스트로
-        if self.instance and self.instance.favorite_categories:
-            category_names = self.instance.favorite_categories.split(',')
-            self.initial['interested_genres'] = Category.objects.filter(name__in=category_names)
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        genres = self.cleaned_data.get('interested_genres')
-        if genres:
-            user.favorite_categories = ','.join([g.name for g in genres])
-        else:
-            user.favorite_categories = ''
+        # genres = self.cleaned_data.get('interested_genres')
+        # if genres:
+        #     user.favorite_categories = ','.join([g.name for g in genres])
+        # else:
+        #     user.favorite_categories = ''
         if commit:
             user.save()
+            self.save_m2m()
         return user

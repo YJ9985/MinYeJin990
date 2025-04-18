@@ -15,10 +15,9 @@ class BookForm(forms.ModelForm):
 class ThreadForm(forms.ModelForm):
     class Meta:
         model = Thread
-        exclude = [
-            # 'user',
-            # 'book',
-            'cover_img',
-            'like_users',
-            
-        ]
+        fields = ('title', 'content', 'reading_date',)
+        widgets = {
+            'reading_date': forms.DateInput(
+                attrs={'type': 'date', 'class': 'form-control'}
+            ),
+        }

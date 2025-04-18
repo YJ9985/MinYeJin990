@@ -58,15 +58,18 @@
   </form>
 
   <hr>
-  <h1>Thread</h1><a href="{% url "books:thread_create" book.pk %}">쓰레드 작성</a>
-  {% for thread_ in thread  %}
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="m-0">Thread</h1>
+    <a href="{% url "books:thread_create" book.pk %}">쓰레드 작성</a>
+  </div>
+  {% for thread in threads %}
   <li>
-    <a href="{% url "books:thread_detail" thread_.pk %}">
-      {{thread_.title}}
+    <a href="{% url "books:thread_detail" thread.pk %}">
+      {{thread.title}}
     </a>
   </li>
   {% endfor %}
-
   <hr>
 
   <div>

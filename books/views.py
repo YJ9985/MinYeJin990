@@ -50,12 +50,12 @@ def create(request):
 @login_required
 def detail(request, pk):
     book = Book.objects.get(pk=pk)
-    threadform= ThreadForm()
-    thread = book.thread_set.all()
+    threadform = ThreadForm()
+    threads = book.thread_set.all()
     context = {
         "book": book,
-        "thread":thread,
-        'threadform':threadform,
+        "threads": threads,
+        'threadform': threadform,
     }
     return render(request, "books/detail.html", context)
 
@@ -82,28 +82,60 @@ def delete(request, pk):
     return redirect("books:index")
 
 @login_required
-@require_POST
-def thread_create(request,pk):
-
+@require_http_methods(['GET', 'POST'])
+def thread_create(request, pk):
+    book = Book.objects.get(pk=pk)
     if request.method == "POST":
-        book = Book.objects.get(pk=pk)
         form = ThreadForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect("books:detail", pk)
-    form = ThreadForm()
+            thread = form.save(commit=False)
+            thread.book = book
+            thread.user = request.user
+            thread.save()
+            return redirect("books:detail", pk=pk)
+    else:
+        form = ThreadForm()
     context={
-        'form':form,
-        'pk':pk
+        'form': form,
+        'pk': pk,
     }
-    return render(request,"books/create_thread.html",context)
+    return render(request,"books/thread_create.html",context)
 
 @login_required
 @require_http_methods(['GET'])
 def thread_detail(request, pk):
     thread= Thread.objects.get(pk=pk)
     context={
-        'thread':thread,
+        'thread': thread,
     }
     return render(request,'books/thread_detail.html', context)
+
+
+@login_required
+@require_http_methods(['GET', 'POST'])
+def thread_update(request, pk):
+    thread = Thread.objects.get(pk=pk)
+    if request.user == thread.user:
+        if request.method == "POST":
+            form = ThreadForm(request.POST, request.FILES, instance=thread)
+            if form.is_valid():
+                form.save()
+                return redirect("books:detail", thread.book.pk)
+        else:
+            form = ThreadForm(instance=thread)
+    else:
+        return redirect('books:index')
+    context = {
+        "form": form,
+        "thread": thread,
+    }
+    return render(request, "books/thread_update.html", context)
+
+@login_required
+@require_POST
+def thread_delete(request, pk):
+    thread = Thread.objects.get(pk=pk)
+    book_pk = thread.book.pk
+    thread.delete()
+    return redirect("books:detail", book_pk)
 

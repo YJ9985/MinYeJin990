@@ -1,7 +1,40 @@
 {% extends "base.html" %}
 
 {% block content %}
-    {{thread.title}}
-    {{thread.book.title}}
+    <h1>{{ thread.title }}</h1>
+    <div class="d-flex align-items-center gap-4 mb-3">
+      <div>
+        <strong>도서:</strong>
+        <a href="{% url 'books:detail' thread.book.pk %}" class="ms-1">
+          {{ thread.book.title }}
+        </a>
+      </div>
+    
+      <div>
+        <strong>작성자:</strong>
+        <a href="{% url 'accounts:login' %}" class="ms-1">
+          {{ user.username }}
+        </a>
+      </div>
+    
+      <div>
+        <strong>독서일:</strong>
+        <span class="ms-1">{{ thread.reading_date }}</span>
+      </div>
+    </div>
+    
+    <hr>
+
+    <p>{{ thread.content }}</p>
+    <hr>
+
+    <a href="{% url "books:thread_update" thread.pk %}" class="btn btn-success mb-2">수정</a>
+
+    <form action="{% url "books:thread_delete" thread.pk %}" method="POST">
+        {% csrf_token %}
+       <input type="submit" class="btn btn-secondary" value="삭제">  
+    </form>
+        
+
 
 {% endblock content %}

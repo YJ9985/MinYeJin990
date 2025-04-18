@@ -30,8 +30,8 @@ class Book(models.Model):
         related_name='books',
         verbose_name='등록한 사용자',
     )
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     title = models.CharField(max_length=20)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     description = models.TextField()
     customer_review_rank = models.IntegerField()
     author = models.CharField(max_length=15)

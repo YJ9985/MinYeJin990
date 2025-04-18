@@ -6,6 +6,7 @@ from django.contrib.auth import logout as auth_logout
 from .forms import CustomUserChangeForm, CustomUserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_POST
+from django.contrib.auth import get_user_model, update_session_auth_hash
 
 # Create your views here.
 @require_http_methods(['GET', 'POST'])
@@ -57,6 +58,7 @@ def update(request):
         form = CustomUserChangeForm(instance=request.user)
     context = {
         'form': form,
+        'user': request.user,
     }
     return render(request, 'accounts/update.html', context)
 
@@ -74,7 +76,8 @@ def change_password(request, user_pk):
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()
+            update_session_auth_hash(request, user)
             return redirect('books:index')
     else:
         form = PasswordChangeForm(request.user)
@@ -82,3 +85,19 @@ def change_password(request, user_pk):
         'form': form,
     }
     return render(request, 'accounts/change_password.html', context)
+
+@login_required
+def profile(request):
+    pass
+
+@login_required
+@require_http_methods(['POST'])
+def follow(request, user_pk):
+    User = get_user_model()
+    person = User.objects.get(pk=user_pk)
+    if person != request.user:
+        if person in person.followers.all():
+            person.followers.remove(request.user)
+        else:
+            person.followers.add(request.user)
+    return redirect(request, 'accounts/profile.html')

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Book
+from .models import Book,Thread
 
 
 class BookForm(forms.ModelForm):
@@ -10,4 +10,15 @@ class BookForm(forms.ModelForm):
             "author_profile_img",
             "author_works",
             "audio_file",
+        ]
+
+class ThreadForm(forms.ModelForm):
+    class Meta:
+        model = Thread
+        exclude = [
+            # 'user',
+            # 'book',
+            'cover_img',
+            'like_users',
+            
         ]

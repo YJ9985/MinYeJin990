@@ -51,7 +51,7 @@ class Thread(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE, verbose_name='해당 도서')
     title = models.CharField(max_length=100)
     content = models.TextField()
-    reading_date = models.DateField(null=True, blank=True)
+    reading_date = models.DateField( blank=True)
     cover_img = models.ImageField(upload_to="thread_covers/", blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

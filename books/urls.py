@@ -9,4 +9,7 @@ urlpatterns = [
     path("<int:pk>/", views.detail, name="detail"),
     path("<int:pk>/update/", views.update, name="update"),
     path("<int:pk>/delete/", views.delete, name="delete"),
+    path("<int:pk>/create_thread/",views.create_thread, name="create_thread"),
+    path('<int:pk>/thread_detail',views.thread_detail,name='thread_detail'),
+
 ]

@@ -8,6 +8,8 @@ from .utils import (
     create_tts_audio,
 )
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods, require_POST
+
 
 def index(request):
     books = Book.objects.all()
@@ -80,7 +82,8 @@ def delete(request, pk):
     return redirect("books:index")
 
 @login_required
-def create_thread(request,pk):
+@require_POST
+def thread_create(request,pk):
 
     if request.method == "POST":
         book = Book.objects.get(pk=pk)
@@ -94,6 +97,9 @@ def create_thread(request,pk):
         'pk':pk
     }
     return render(request,"books/create_thread.html",context)
+
+@login_required
+@require_http_methods(['GET'])
 def thread_detail(request, pk):
     thread= Thread.objects.get(pk=pk)
     context={

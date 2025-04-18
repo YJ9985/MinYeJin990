@@ -101,3 +101,25 @@ def thread_detail(request, pk):
     }
     return render(request,'books/thread_detail.html', context)
 
+def thread_update(request, pk):
+    thread = Thread.objects.get(pk=pk)
+    if request.method == "POST":
+        form = ThreadForm(request.POST, request.FILES, instance=thread)
+        if form.is_valid():
+            form.save()
+            book_pk = thread.book.pk
+            return redirect("books:detail", book_pk)
+    else:
+        form = BookForm(instance=thread)
+    context = {
+        "form": form,
+        "thread": thread,
+    }
+    return render(request, "books/thread_update.html", context)
+
+def thread_delete(request, pk):
+    thread = Thread.objects.get(pk=pk)
+    book_pk = thread.book.pk
+    thread.delete()
+    return redirect("books:detail", book_pk)
+

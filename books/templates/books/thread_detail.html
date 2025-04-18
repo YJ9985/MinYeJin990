@@ -1,7 +1,26 @@
 {% extends "base.html" %}
 
 {% block content %}
-    {{thread.title}}
-    {{thread.book.title}}
+    <h1>{{thread.title}}</h1>
+    <h3>
+       도서 : <a href="{% url "books:detail" thread.book.pk %}">{{thread.book.title}} </a>
+       독서일 : {{thread.created_at}}
+       
+    </h3>
+    <hr>
+    <h3>{{thread.content}}</h3>
+    <hr>
+
+    <form action="{% url "books:thread_update" thread.pk %}" method="POST">
+        {% csrf_token %}
+      <input type="submit" value="수정">  
+    </form>
+
+    <form action="{% url "books:thread_delete" thread.pk %}" method="POST">
+        {% csrf_token %}
+       <input type="submit" value="삭제">  
+    </form>
+        
+
 
 {% endblock content %}

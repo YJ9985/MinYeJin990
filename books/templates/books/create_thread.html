@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>쓰레드 수정 페이지</h1>
+  <h1>쓰레드 작성성</h1>
   <form action="{% url "books:create_thread" pk %}" method="POST">
     {% csrf_token %}
     {{ form.as_p }}

@@ -125,7 +125,7 @@ def thread_update(request, pk):
         else:
             form = ThreadForm(instance=thread)
     else:
-        return redirect('books:index')
+        return redirect('books:thread_detail', thread.pk)
     context = {
         "form": form,
         "thread": thread,
@@ -138,5 +138,4 @@ def thread_delete(request, pk):
     thread = Thread.objects.get(pk=pk)
     if request.user == thread.user.pk:
         thread.delete()
-        return redirect("books:detail", thread.book.pk)
-
+    return redirect("books:thread_detail", thread.pk)

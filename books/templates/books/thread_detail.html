@@ -12,7 +12,7 @@
     
       <div>
         <strong>작성자:</strong>
-        <a href="{% url 'accounts:login' %}" class="ms-1">
+        <a href="{% url 'accounts:profile' user.pk %}" class="ms-1">
           {{ user.username }}
         </a>
       </div>

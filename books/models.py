@@ -53,4 +53,4 @@ class Category(models.Model):
     
 # 특정 도서에 대한 게시글
 class Thread(models.Model):
-    title = models.ForeignKey(Book, on_delete=CASCADE)
+    title = models.ForeignKey(Book, on_delete=models.CASCADE)

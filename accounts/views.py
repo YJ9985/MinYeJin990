@@ -95,7 +95,7 @@ def profile(request,user_pk):
     threads = person.thread_set.all()
     context = {
         'person':person,
-        'threads':threads
+        'threads':threads,
     }
     return render(request,'accounts/profile.html',context)
 
@@ -109,4 +109,7 @@ def follow(request, user_pk):
             person.followers.remove(request.user)
         else:
             person.followers.add(request.user)
-    return redirect(request, 'accounts/profile.html')
+    context = {
+        'person': person,
+    }
+    return redirect(request, 'accounts/profile.html', context)

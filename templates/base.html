@@ -58,7 +58,8 @@
               <a class="nav-link" href="{% url 'books:create' %}">CREATE</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" aria-current="page" href="{% url 'accounts:profile' request.user.username %}">MY PROFILE</a>
+              {% comment %} <a class="nav-link" aria-current="page" href="{% url 'accounts:profile' request.user.username %}">MY PROFILE</a> {% endcomment %}
+              <a class="nav-link" aria-current="page" href="{% url 'accounts:profile' request.user.pk %}">MY PROFILE</a>
             </li>
             <li class="nav-item">
               <form action="{% url "accounts:logout" %}" method="POST">

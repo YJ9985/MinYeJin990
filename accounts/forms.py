@@ -93,8 +93,8 @@ class CustomUserChangeForm(UserChangeForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields.pop('password')  # ← 비밀번호 필드 제거
-        self.fields['interested_genres'].queryset = Category.objects.all()  # 기존 유지
+        self.fields.pop('password')  # 비밀번호 필드 제거
+        self.fields['interested_genres'].queryset = Category.objects.all() 
 
 
     def save(self, commit=True):

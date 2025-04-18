@@ -47,7 +47,7 @@ def create(request):
     context = {"form": form}
     return render(request, "books/create.html", context)
 
-@login_required
+# @login_required
 def detail(request, pk):
     book = Book.objects.get(pk=pk)
     threadform = ThreadForm()
@@ -78,8 +78,9 @@ def update(request, pk):
 @login_required
 def delete(request, pk):
     book = Book.objects.get(pk=pk)
-    book.delete()
-    return redirect("books:index")
+    if request.user == book.user.pk:
+        book.delete()
+        return redirect("books:index")
 
 @login_required
 @require_http_methods(['GET', 'POST'])
@@ -101,7 +102,7 @@ def thread_create(request, pk):
     }
     return render(request,"books/thread_create.html",context)
 
-@login_required
+# @login_required
 @require_http_methods(['GET'])
 def thread_detail(request, pk):
     thread= Thread.objects.get(pk=pk)
@@ -135,7 +136,7 @@ def thread_update(request, pk):
 @require_POST
 def thread_delete(request, pk):
     thread = Thread.objects.get(pk=pk)
-    book_pk = thread.book.pk
-    thread.delete()
-    return redirect("books:detail", book_pk)
+    if request.user == thread.user.pk:
+        thread.delete()
+        return redirect("books:detail", thread.book.pk)
 

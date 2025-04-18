@@ -46,7 +46,7 @@
 <ul>
   {% for thread in threads %}
     <li>
-      <a href="#">title</a> - 좋아요: 
+      <a href="{% url "books:thread_detail" thread.pk%}">title</a> - 좋아요: {{ thread.like_users|length }}
     </li>
   {% empty %}
     <p>작성한 쓰레드가 없습니다.</p>

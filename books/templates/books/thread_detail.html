@@ -2,8 +2,10 @@
 
 {% block content %}
     <h1>{{ thread.title }}</h1>
+    <img src="{{thread.cover_img}}" alt="이미지 로딩 실패" width="550">
     <div class="d-flex align-items-center gap-4 mb-3">
       <div>
+        
         <strong>도서:</strong>
         <a href="{% url 'books:detail' thread.book.pk %}" class="ms-1">
           {{ thread.book.title }}

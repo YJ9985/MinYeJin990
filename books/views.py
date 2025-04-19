@@ -6,6 +6,7 @@ from .utils import (
     generate_author_gpt_info,
     generate_audio_script,
     create_tts_audio,
+    create_ai_image,
 )
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_POST
@@ -92,6 +93,7 @@ def thread_create(request, pk):
             thread = form.save(commit=False)
             thread.book = book
             thread.user = request.user
+            thread.cover_img = create_ai_image(thread.content)
             thread.save()
             return redirect("books:detail", pk=pk)
     else:

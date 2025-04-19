@@ -51,7 +51,7 @@
   {% endif %}
 
   <hr>
-
+  {% if request.user == book.user %}
   <a href="{% url 'books:update' book.pk %}" class="btn btn-secondary">UPDATE</a>
   <form action="{% url 'books:delete' book.pk %}" method="POST" class="d-inline">
     {% csrf_token %}
@@ -59,7 +59,7 @@
   </form>
 
   <hr>
-
+  {% endif %}
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="m-0">Thread</h1>
     <a href="{% url "books:thread_create" book.pk %}">쓰레드 작성</a>

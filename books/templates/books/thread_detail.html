@@ -12,8 +12,8 @@
     
       <div>
         <strong>작성자:</strong>
-        <a href="{% url 'accounts:profile' user.pk %}" class="ms-1">
-          {{ user.username }}
+        <a href="{% url 'accounts:profile' thread.user.pk %}" class="ms-1">
+          {{ thread.user.username }}
         </a>
       </div>
     
@@ -26,6 +26,7 @@
     <hr>
 
     <p>{{ thread.content }}</p>
+    {% if request.user == thread.user %}
     <hr>
 
     <a href="{% url "books:thread_update" thread.pk %}" class="btn btn-success mb-2">수정</a>
@@ -35,6 +36,6 @@
        <input type="submit" class="btn btn-secondary" value="삭제">  
     </form>
         
-
+    {% endif %}
 
 {% endblock content %}

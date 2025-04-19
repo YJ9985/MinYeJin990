@@ -24,7 +24,7 @@ def create(request):
         form = BookForm(request.POST, request.FILES)
         if form.is_valid():
             book = form.save(commit=False)
-
+            book.user =request.user
             wiki_summary = process_wikipedia_info(book)
 
             author_info, author_works = generate_author_gpt_info(
@@ -78,7 +78,7 @@ def update(request, pk):
 @login_required
 def delete(request, pk):
     book = Book.objects.get(pk=pk)
-    if request.user == book.user.pk:
+    if request.user == book.user:
         book.delete()
         return redirect("books:index")
 
@@ -136,6 +136,6 @@ def thread_update(request, pk):
 @require_POST
 def thread_delete(request, pk):
     thread = Thread.objects.get(pk=pk)
-    if request.user == thread.user.pk:
+    if request.user == thread.user:
         thread.delete()
-    return redirect("books:thread_detail", thread.pk)
+    return redirect("books:detail", thread.book.pk)

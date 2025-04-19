@@ -12,8 +12,8 @@
     
       <div>
         <strong>작성자:</strong>
-        <a href="{% url 'accounts:profile' user.pk %}" class="ms-1">
-          {{ user.username }}
+        <a href="{% url 'accounts:profile' thread.user.pk %}" class="ms-1">
+          {{ thread.user.username }}
         </a>
       </div>
     
@@ -26,6 +26,17 @@
     <hr>
 
     <p>{{ thread.content }}</p>
+    <p>좋아요 수 : {{thread.like_users.all|length}}    </p>
+    <form action="{% url "books:thread_likes" thread.pk %}" method="POST">
+      {% csrf_token %}
+      {% if request.user in thread.like_users.all %}
+     <input type="submit" class="btn btn-secondary" value="좋아요 취소">
+    {% else %}
+    <input type="submit" class="btn btn-secondary" value="좋아요">
+     {% endif %}  
+  </form>
+    
+    {% if request.user == thread.user %}
     <hr>
 
     <a href="{% url "books:thread_update" thread.pk %}" class="btn btn-success mb-2">수정</a>
@@ -35,6 +46,6 @@
        <input type="submit" class="btn btn-secondary" value="삭제">  
     </form>
         
-
+    {% endif %}
 
 {% endblock content %}

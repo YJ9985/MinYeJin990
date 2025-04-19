@@ -25,10 +25,11 @@ class Category(models.Model):
     
 
 class Book(models.Model):
-    users = models.ManyToManyField(
+    user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name='books',
         verbose_name='등록한 사용자',
+        on_delete=models.CASCADE,
     )
     title = models.CharField(max_length=20)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)

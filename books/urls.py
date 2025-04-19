@@ -13,4 +13,5 @@ urlpatterns = [
     path('<int:pk>/thread_detail/',views.thread_detail,name='thread_detail'),
     path("<int:pk>/thread_update/",views.thread_update, name='thread_update'),
     path("<int:pk>/thread_delete/",views.thread_delete,name="thread_delete"),
+    path("<int:pk>/thread_likes/",views.thread_likes,name="thread_likes")
 ]

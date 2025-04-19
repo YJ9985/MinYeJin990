@@ -139,3 +139,12 @@ def thread_delete(request, pk):
     if request.user == thread.user:
         thread.delete()
     return redirect("books:detail", thread.book.pk)
+
+@login_required
+def thread_likes(request,pk):
+    thread = Thread.objects.get(pk=pk)
+    if request.user in thread.like_users.all():
+        thread.like_users.remove(request.user)
+    else:
+        thread.like_users.add(request.user)
+    return redirect('books:thread_detail',pk)

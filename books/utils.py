@@ -6,6 +6,18 @@ from django.conf import settings
 from gtts import gTTS
 import wikipediaapi
 from pydantic import BaseModel
+import os
+from dotenv import load_dotenv
+
+# .env 파일 로드
+load_dotenv()
+
+# 환경 변수에서 API 키 불러오기
+api_key = os.getenv("OPENAI_API_KEY")
+
+# # OpenAI 클라이언트 초기화
+# client = openai.OpenAI(api_key=api_key)
+
 
 
 class AuthorInfo(BaseModel):
@@ -164,3 +176,45 @@ def create_tts_audio(book, audio_script):
     except Exception as e:
         print("gTTS 음성 파일 생성 에러:", e)
         return None
+    
+import sqlite3    
+
+def create_ai_image(source):
+    # OpenAI 클라이언트 초기화
+    client = openai.OpenAI()
+
+    # 텍스트 분위기를 그림으로 표현할 프롬프트 생성
+    prompt_response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {
+                "role": "system",
+                "content": "당신은 입력된 텍스트의 분위기를 시각적 이미지로 설명하는 프롬프트를 작성하는 어시스턴트입니다."
+            },
+            {
+                "role": "user",
+                "content": source
+            }
+        ],
+        temperature=0.7,
+        max_tokens=300
+    )
+
+    # GPT가 생성한 이미지 프롬프트
+    image_prompt = prompt_response.choices[0].message.content.strip()
+
+    # DALL·E 모델로 이미지 생성
+    image_response = client.images.generate(
+        model="dall-e-3",
+        prompt=image_prompt,
+        size="1024x1024",
+        quality="standard",
+        n=1
+    )
+
+    # 생성된 이미지의 URL 반환
+    image_url = image_response.data[0].url
+    return image_url
+
+
+

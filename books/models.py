@@ -25,13 +25,14 @@ class Category(models.Model):
     
 
 class Book(models.Model):
-    users = models.ManyToManyField(
+    user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name='books',
         verbose_name='등록한 사용자',
+        on_delete=models.CASCADE,
     )
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     title = models.CharField(max_length=20)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     description = models.TextField()
     customer_review_rank = models.IntegerField()
     author = models.CharField(max_length=15)
@@ -49,9 +50,9 @@ class Thread(models.Model):
         verbose_name='작성자',
     )
     book = models.ForeignKey(Book, on_delete=models.CASCADE, verbose_name='해당 도서')
-    title = models.CharField(max_length=100)
-    content = models.TextField()
-    reading_date = models.DateField(null=True, blank=True)
+    title = models.CharField(max_length=100, verbose_name='제목')
+    content = models.TextField(verbose_name='내용')
+    reading_date = models.DateField(blank=True, verbose_name='독서일')
     cover_img = models.ImageField(upload_to="thread_covers/", blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

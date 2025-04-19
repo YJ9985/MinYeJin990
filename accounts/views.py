@@ -6,6 +6,8 @@ from django.contrib.auth import logout as auth_logout
 from .forms import CustomUserChangeForm, CustomUserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_POST
+from django.contrib.auth import get_user_model, update_session_auth_hash
+from books.models import Thread
 
 # Create your views here.
 @require_http_methods(['GET', 'POST'])
@@ -33,7 +35,7 @@ def logout(request):
 @require_http_methods(['GET', 'POST'])
 def signup(request):
     if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST,request.FILES)
         if form.is_valid():
             form.save()
             return redirect('books:index')
@@ -49,14 +51,15 @@ def signup(request):
 @require_http_methods(['GET', 'POST'])
 def update(request):
     if request.method == 'POST':
-        form = CustomUserChangeForm(request.POST, instance=request.user)
+        form = CustomUserChangeForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
             form.save()
-            return redirect('books:index')
+            return redirect('accounts:profile', request.user.pk)
     else:
         form = CustomUserChangeForm(instance=request.user)
     context = {
         'form': form,
+        'user': request.user,
     }
     return render(request, 'accounts/update.html', context)
 
@@ -74,7 +77,8 @@ def change_password(request, user_pk):
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()
+            update_session_auth_hash(request, user)
             return redirect('books:index')
     else:
         form = PasswordChangeForm(request.user)
@@ -82,3 +86,27 @@ def change_password(request, user_pk):
         'form': form,
     }
     return render(request, 'accounts/change_password.html', context)
+
+@login_required
+@require_http_methods(['GET'])
+def profile(request,user_pk):
+    User = get_user_model()
+    person = User.objects.get(pk=user_pk)
+    threads = person.thread_set.all()
+    context = {
+        'person':person,
+        'threads':threads,
+    }
+    return render(request,'accounts/profile.html',context)
+
+@login_required
+@require_http_methods(['POST'])
+def follow(request, user_pk):
+    User = get_user_model()
+    person = User.objects.get(pk=user_pk)
+    if person != request.user:
+        if request.user in person.followers.all():
+            person.followers.remove(request.user)
+        else:
+            person.followers.add(request.user)
+    return redirect('accounts:profile', user_pk=person.pk)
